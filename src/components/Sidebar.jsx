@@ -1,9 +1,9 @@
 import React from 'react';
-import { MapPin, Github, Linkedin, Globe, Twitter, Edit } from 'lucide-react';
+import { MapPin, Github, Linkedin, Globe, Twitter, Trophy, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // Ab ye userData prop lega (Jo DB se aayega)
-const Sidebar = ({ userData }) => {
+const Sidebar = ({ userData, userRank, hoursStudied }) => {
   // Default values agar data abhi load nahi hua
   const data = userData || {};
 
@@ -21,15 +21,21 @@ const Sidebar = ({ userData }) => {
         </div>
         
         <h2 className="mt-4 text-xl font-bold text-gray-100">{data.displayName || "User"}</h2>
-        <p className="text-green-400 text-sm font-mono mt-1">Rank: Focus Master</p>
+        <p className="text-gray-400 text-sm font-mono mt-1">{data.rank || "Novice"}</p>
         
         {/* Dynamic Bio (Check Toggle) */}
         {data.show_bio && data.bio && (
              <p className="text-gray-400 text-sm mt-3 leading-relaxed italic">"{data.bio}"</p>
         )}
         
-        <Link to="/settings" className="mt-5 w-full bg-green-700/20 hover:bg-green-600/30 text-green-400 border border-green-600 py-2 rounded font-medium flex items-center justify-center gap-2 transition-all">
-          <Edit size={16} /> Edit Profile
+        {/* User's Global Rank Badge */}
+        <Link 
+          to="/rankings" 
+          className="mt-5 w-full bg-[#1f1f1f] border border-gray-600 py-2.5 rounded font-medium flex items-center justify-center gap-2 text-gray-400 hover:text-gray-300 hover:border-gray-500 transition-all"
+        >
+          <Trophy size={16} className="text-gray-500" />
+          <span>Global Rank: </span>
+          <span className="text-white font-bold">#{userRank || '--'}</span>
         </Link>
       </div>
 
@@ -76,12 +82,18 @@ const Sidebar = ({ userData }) => {
       <div className="mt-8 border-t border-gray-700 pt-4 text-sm">
         <h3 className="font-bold mb-3 text-gray-200">Karma Stats</h3>
         <div className="flex justify-between mb-2">
-          <span className="text-gray-400">Total Hours</span>
-          <span className="text-white">--</span>
+          <span className="text-gray-400 flex items-center gap-2">
+            <Clock size={14} className="text-gray-500" />
+            Total Hours
+          </span>
+          <span className="text-white font-medium">{hoursStudied || 0}h</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-400">Global Rank</span>
-          <span className="text-white">--</span>
+          <span className="text-gray-400 flex items-center gap-2">
+            <Trophy size={14} className="text-gray-500" />
+            Global Rank
+          </span>
+          <span className="text-white font-medium">#{userRank || '--'}</span>
         </div>
       </div>
     </div>

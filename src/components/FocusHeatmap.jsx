@@ -14,6 +14,14 @@ const COLORS = [
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+// Helper to format date as YYYY-MM-DD in local timezone (not UTC)
+const formatLocalDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const FocusHeatmap = () => {
   const { historyData, loading } = useHistory();
   const currentYear = new Date().getFullYear();
@@ -43,6 +51,8 @@ const FocusHeatmap = () => {
   // Generate calendar data - "Current" shows last 12 months, other years show Jan-Dec
   const calendarData = useMemo(() => {
     const today = new Date();
+    // Normalize today to midnight for accurate date comparison
+    today.setHours(0, 0, 0, 0);
     const isCurrentView = selectedYear === currentYear;
 
     const months = [];
@@ -59,8 +69,9 @@ const FocusHeatmap = () => {
         
         for (let d = new Date(monthStart); d <= monthEnd; d.setDate(d.getDate() + 1)) {
           const dayOfWeek = d.getDay();
-          const dateStr = d.toISOString().split('T')[0];
-          const isFuture = d > today;
+          const dateStr = formatLocalDate(d);
+          const todayStr = formatLocalDate(today);
+          const isFuture = dateStr > todayStr;
           const points = historyMap.get(dateStr) || 0;
           
           let level = 0;
@@ -99,7 +110,7 @@ const FocusHeatmap = () => {
         
         for (let d = new Date(monthStart); d <= monthEnd; d.setDate(d.getDate() + 1)) {
           const dayOfWeek = d.getDay();
-          const dateStr = d.toISOString().split('T')[0];
+          const dateStr = formatLocalDate(d);
           const points = historyMap.get(dateStr) || 0;
           
           let level = 0;

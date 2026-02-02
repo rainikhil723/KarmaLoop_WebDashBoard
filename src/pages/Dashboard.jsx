@@ -4,25 +4,32 @@ import Sidebar from '../components/Sidebar';
 import FocusHeatmap from '../components/FocusHeatmap';
 import HistoryChart from '../components/HistoryChart';
 import ProfileModal from '../components/ProfileModal';
-import KarmaCard from '../components/KarmaCard'; // 👈 NEW
-import BadgesCard from '../components/BadgesCard'; // 👈 NEW
+import KarmaCard from '../components/KarmaCard';
+import BadgesCard from '../components/BadgesCard';
 import { useAuth } from '../context/AuthContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import useUserStats from '../hooks/useUserStats'; 
 import useHistorySync from '../hooks/useHistorySync';
-import { seedDatabase, clearAllHistory } from '../hooks/useHistory'; // 👈 Import seed and clear functions
-import { Database, Trash2 } from 'lucide-react'; // 👈 Icons for buttons
+import useLeaderboard from '../hooks/useLeaderboard';
+import { seedDatabase, clearAllHistory } from '../hooks/useHistory';
+import { Database, Trash2 } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const stats = useUserStats(); // Gets points_hard, points_mod, etc.
+  const stats = useUserStats();
+  const { leaderboard } = useLeaderboard(100);
   useHistorySync(user, stats);
   
   const [userData, setUserData] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [clearing, setClearing] = useState(false);
+
+  // Get current user's rank and hours from leaderboard
+  const currentUserData = leaderboard.find(u => u.uid === user?.uid);
+  const userRank = currentUserData?.rank || null;
+  const hoursStudied = currentUserData?.hours_studied || 0;
 
   // 🔥 Seed Database Function
   const handleSeedDatabase = async () => {
@@ -66,7 +73,11 @@ const Dashboard = () => {
           
           {/* Left: Sidebar */}
           <div className="col-span-1">
-              <Sidebar userData={{...userData, karma: stats.points_total, rank: stats.rank}} />
+              <Sidebar 
+                userData={{...userData, karma: stats.points_total, rank: stats.rank}} 
+                userRank={userRank}
+                hoursStudied={hoursStudied}
+              />
           </div>
 
           {/* Right: Main Content */}
