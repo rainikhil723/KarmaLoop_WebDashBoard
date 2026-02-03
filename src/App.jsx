@@ -1,10 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+
+// Pages
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
-import Settings from './pages/Settings'; // 👈 Import kiya
-import Rankings from './pages/Rankings'; // 👈 Rankings page
+import Settings from './pages/Settings'; 
+import Rankings from './pages/Rankings'; 
+import Community from './pages/Community'; // 👈 IMPORT THE NEW PAGE
 
 const AppContent = () => {
   const { user } = useAuth();
@@ -14,18 +17,20 @@ const AppContent = () => {
   return (
     <Routes>
       <Route path="/" element={<Dashboard />} />
-      <Route path="/settings" element={<Settings />} /> {/* 👈 Naya Route */}
-      <Route path="/rankings" element={<Rankings />} /> {/* 👈 Rankings Route */}
+      <Route path="/settings" element={<Settings />} />
+      <Route path="/rankings" element={<Rankings />} />
+      <Route path="/community" element={<Community />} /> {/* 👈 NEW ROUTE */}
     </Routes>
   );
 };
 
 function App() {
   return (
-    <Router> {/* Router zaroori hai ab navigation ke liye */}
+    <Router>
       <AuthProvider>
         <AppContent />
       </AuthProvider>
+      {/* ❌ REMOVED the hardcoded CommunityList from here */}
     </Router>
   );
 }
