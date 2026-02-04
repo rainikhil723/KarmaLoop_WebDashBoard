@@ -7,7 +7,8 @@ const useHistorySync = (user, stats) => {
   const initializedRef = useRef(false);
 
   useEffect(() => {
-    if (!user?.uid || stats.points_total === 0) return;
+    // Don't run while stats are still loading
+    if (!user?.uid || stats.loading) return;
 
     const syncToday = async () => {
       const today = new Date();
