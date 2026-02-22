@@ -7,15 +7,24 @@ import { seedDatabase } from '../hooks/useHistory';
 import { 
   User, Settings as SettingsIcon, Trash2, 
   ChevronRight, Save, MapPin, Globe, 
-  Github, Linkedin, Twitter, Shield, Calendar, Key, Loader2, Wrench, Zap
+  Github, Linkedin, Twitter, Shield, Calendar, Key, Loader2, Wrench, Zap,
+  Lock, Unlock, Eye, EyeOff, ShieldAlert
 } from 'lucide-react';
+import { useDevAuth } from '../context/DevAuthContext'; // 🔐 Dev mode gating
 
 const Settings = () => {
   const { user } = useAuth();
+  const { isDevMode, unlockDevMode, lockDevMode } = useDevAuth(); // 🔐 Dev mode state
+
   const [activeTab, setActiveTab] = useState('basic');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
+
+  // ─── Developer password input state ───
+  const [devPassword, setDevPassword] = useState('');           // What the user types
+  const [showDevPassword, setShowDevPassword] = useState(false); // Toggle password visibility
+  const [devError, setDevError] = useState('');                  // Error message on wrong password
 
   const [formData, setFormData] = useState({
     displayName: '',
@@ -248,11 +257,120 @@ const Settings = () => {
                         </div>
                      </div>
 
-                     <div className="bg-cyan-500/5 rounded-3xl p-8 border border-cyan-500/10 relative overflow-hidden">
+                     {/* ══════════════════════════════════════════════════════════════
+                         🔐 DEVELOPER ACCESS — PASSWORD GATED
+                         ──────────────────────────────────────────────────────────────
+                         • When LOCKED:  Shows a password input field. User must enter
+                           the correct developer password to unlock.
+                         • When UNLOCKED: Shows all developer tools (Synthesize Data,
+                           Force Override) + a Lock button to re-lock.
+                         • Dev mode state is managed by DevAuthContext and persists
+                           in sessionStorage (resets when tab is closed).
+                         ══════════════════════════════════════════════════════════════ */}
+                     <div className={`rounded-3xl p-8 border relative overflow-hidden transition-all duration-500 ${
+                       isDevMode 
+                         ? 'bg-cyan-500/5 border-cyan-500/10'       /* Unlocked: cyan theme */
+                         : 'bg-white/[0.02] border-white/10'         /* Locked: neutral theme */
+                     }`}>
                         <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 blur-3xl rounded-full"></div>
-                        <h2 className="text-lg font-black text-cyan-400 mb-6 flex items-center gap-3 relative z-10"><Wrench size={20}/> Developer Access</h2>
                         
-                        <div className="space-y-4 relative z-10">
+                        <h2 className={`text-lg font-black mb-6 flex items-center gap-3 relative z-10 ${
+                          isDevMode ? 'text-cyan-400' : 'text-white/60'
+                        }`}>
+                          {isDevMode ? <Unlock size={20}/> : <Lock size={20}/>}
+                          Developer Access
+                          {/* Status badge showing locked/unlocked */}
+                          <span className={`ml-auto text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg border ${
+                            isDevMode 
+                              ? 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400' 
+                              : 'bg-white/5 border-white/10 text-white/30'
+                          }`}>
+                            {isDevMode ? '● Unlocked' : '● Locked'}
+                          </span>
+                        </h2>
+                        
+                        {/* ─── LOCKED STATE: Show password prompt ─── */}
+                        {!isDevMode && (
+                          <div className="relative z-10 space-y-4">
+                            <div className="bg-[#0a0a0a]/50 p-6 rounded-2xl border border-white/5">
+                              <div className="flex items-center gap-3 mb-4">
+                                <ShieldAlert size={18} className="text-yellow-500/80" />
+                                <p className="text-sm font-bold text-white/70">Restricted Area</p>
+                              </div>
+                              <p className="text-xs font-semibold text-white/40 mb-6 leading-relaxed">
+                                Developer tools are password-protected. Enter the developer
+                                password to access features like data synthesis, log purging,
+                                and activity overrides.
+                              </p>
+
+                              {/* Password input field */}
+                              <div className="flex flex-col sm:flex-row gap-3">
+                                <div className="relative flex-1">
+                                  <input
+                                    type={showDevPassword ? 'text' : 'password'}
+                                    value={devPassword}
+                                    onChange={(e) => {
+                                      setDevPassword(e.target.value);
+                                      setDevError(''); // Clear error when user types
+                                    }}
+                                    onKeyDown={(e) => {
+                                      // Allow Enter key to submit
+                                      if (e.key === 'Enter') {
+                                        const success = unlockDevMode(devPassword);
+                                        if (success) {
+                                          setDevPassword('');
+                                          setDevError('');
+                                          showToast('Developer mode activated.', 'success');
+                                        } else {
+                                          setDevError('Access denied. Incorrect password.');
+                                        }
+                                      }
+                                    }}
+                                    placeholder="Enter developer password..."
+                                    className="w-full bg-[#050505] text-white border border-white/10 rounded-xl p-4 pr-12 focus:border-cyan-500/50 outline-none transition-colors placeholder:text-white/20 font-mono text-sm shadow-inner"
+                                  />
+                                  {/* Toggle password visibility */}
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowDevPassword(!showDevPassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                                  >
+                                    {showDevPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                  </button>
+                                </div>
+
+                                {/* Unlock button */}
+                                <button
+                                  onClick={() => {
+                                    const success = unlockDevMode(devPassword);
+                                    if (success) {
+                                      setDevPassword('');
+                                      setDevError('');
+                                      showToast('Developer mode activated.', 'success');
+                                    } else {
+                                      setDevError('Access denied. Incorrect password.');
+                                    }
+                                  }}
+                                  className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 whitespace-nowrap hover:border-cyan-500/30"
+                                >
+                                  <Key size={16} /> Authenticate
+                                </button>
+                              </div>
+
+                              {/* Error message on wrong password */}
+                              {devError && (
+                                <p className="text-red-400 text-xs font-bold mt-3 flex items-center gap-2 animate-pulse">
+                                  <ShieldAlert size={14} /> {devError}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* ─── UNLOCKED STATE: Show full developer tools ─── */}
+                        {isDevMode && (
+                          <div className="space-y-4 relative z-10">
+                            {/* Synthesize Historical Data */}
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-[#0a0a0a]/50 p-5 rounded-2xl border border-white/5 gap-4">
                                 <div>
                                     <p className="text-sm font-bold text-white mb-1">Synthesize Historical Data</p>
@@ -266,6 +384,7 @@ const Settings = () => {
                                 </button>
                             </div>
 
+                            {/* Force Activity Override */}
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-[#0a0a0a]/50 p-5 rounded-2xl border border-white/5 gap-4">
                                 <div>
                                     <p className="text-sm font-bold text-white mb-1">Force Activity Override</p>
@@ -278,7 +397,21 @@ const Settings = () => {
                                     <Zap size={14}/> Override Cycle
                                 </button>
                             </div>
-                        </div>
+
+                            {/* Lock button to re-enable protection */}
+                            <div className="pt-4 border-t border-white/5">
+                              <button
+                                onClick={() => {
+                                  lockDevMode();
+                                  showToast('Developer mode locked.', 'success');
+                                }}
+                                className="bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/20 text-white/60 hover:text-red-400 px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2"
+                              >
+                                <Lock size={14}/> Lock Developer Access
+                              </button>
+                            </div>
+                          </div>
+                        )}
                      </div>
 
                      <div className="bg-red-500/5 rounded-3xl p-8 border border-red-500/10">

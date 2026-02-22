@@ -14,9 +14,11 @@ import useHistorySync from '../hooks/useHistorySync';
 import useLeaderboard from '../hooks/useLeaderboard';
 import { seedDatabase, clearAllHistory } from '../hooks/useHistory';
 import { Database, Trash2 } from 'lucide-react';
+import { useDevAuth } from '../context/DevAuthContext'; // 🔐 Dev mode gating
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { isDevMode } = useDevAuth(); // 🔐 Only show dev buttons when unlocked
   const stats = useUserStats();
   const { leaderboard } = useLeaderboard(100);
   useHistorySync(user, stats);
@@ -104,25 +106,28 @@ const Dashboard = () => {
         onClose={() => setModalOpen(false)} 
       />
 
-      <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-50">
-        <button
-          onClick={handleClearHistory}
-          disabled={clearing}
-          className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 backdrop-blur-md text-red-400 px-6 py-3.5 rounded-2xl shadow-[0_8px_32px_rgba(239,68,68,0.2)] flex items-center gap-3 font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(239,68,68,0.4)] disabled:opacity-50 disabled:scale-100"
-        >
-          <Trash2 size={18} />
-          {clearing ? 'Purging...' : 'Purge Logs'}
-        </button>
+      {/* 🔐 DEV ONLY: These buttons are hidden unless developer mode is unlocked via Settings */}
+      {isDevMode && (
+        <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-50">
+          <button
+            onClick={handleClearHistory}
+            disabled={clearing}
+            className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 backdrop-blur-md text-red-400 px-6 py-3.5 rounded-2xl shadow-[0_8px_32px_rgba(239,68,68,0.2)] flex items-center gap-3 font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(239,68,68,0.4)] disabled:opacity-50 disabled:scale-100"
+          >
+            <Trash2 size={18} />
+            {clearing ? 'Purging...' : 'Purge Logs'}
+          </button>
 
-        <button
-          onClick={handleSeedDatabase}
-          disabled={seeding}
-          className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white px-6 py-3.5 rounded-2xl shadow-[0_8px_32px_rgba(236,72,153,0.3)] flex items-center gap-3 font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(236,72,153,0.5)] disabled:opacity-50 disabled:scale-100"
-        >
-          <Database size={18} />
-          {seeding ? 'Synthesizing...' : 'Synthesize Data'}
-        </button>
-      </div>
+          <button
+            onClick={handleSeedDatabase}
+            disabled={seeding}
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white px-6 py-3.5 rounded-2xl shadow-[0_8px_32px_rgba(236,72,153,0.3)] flex items-center gap-3 font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(236,72,153,0.5)] disabled:opacity-50 disabled:scale-100"
+          >
+            <Database size={18} />
+            {seeding ? 'Synthesizing...' : 'Synthesize Data'}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

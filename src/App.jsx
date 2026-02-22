@@ -1,13 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { DevAuthProvider } from './context/DevAuthContext'; // 🔐 Developer mode gating
 
 // Pages
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Settings from './pages/Settings'; 
 import Rankings from './pages/Rankings'; 
-import Community from './pages/Community'; // 👈 IMPORT THE NEW PAGE
+import Community from './pages/Community';
 
 const AppContent = () => {
   const { user } = useAuth();
@@ -19,7 +20,7 @@ const AppContent = () => {
       <Route path="/" element={<Dashboard />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/rankings" element={<Rankings />} />
-      <Route path="/community" element={<Community />} /> {/* 👈 NEW ROUTE */}
+      <Route path="/community" element={<Community />} />
     </Routes>
   );
 };
@@ -28,9 +29,11 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <AppContent />
+        {/* 🔐 DevAuthProvider wraps everything so any component can check isDevMode */}
+        <DevAuthProvider>
+          <AppContent />
+        </DevAuthProvider>
       </AuthProvider>
-      {/* ❌ REMOVED the hardcoded CommunityList from here */}
     </Router>
   );
 }
