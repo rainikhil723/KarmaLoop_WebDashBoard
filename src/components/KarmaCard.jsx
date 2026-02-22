@@ -2,73 +2,74 @@ import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Label } from 'recharts';
 
 const KarmaCard = ({ stats, loading }) => {
-  
-  // Integer Data for Chart
   const chartData = [
-    { name: 'Hard', value: stats.points_hard, color: '#ef4444' },    // Red
-    { name: 'Medium', value: stats.points_mod, color: '#eab308' },   // Yellow
-    { name: 'Easy', value: stats.points_easy, color: '#00b8a3' },    // Teal
+    { name: 'Hard', value: stats.points_hard, color: '#ec4899' },
+    { name: 'Medium', value: stats.points_mod, color: '#a855f7' },
+    { name: 'Easy', value: stats.points_easy, color: '#06b6d4' },
   ];
 
-  // Agar user ka data 0 hai, to grey ring dikhayenge
   const isEmpty = stats.points_total <= 0;
-  const displayData = isEmpty ? [{ name: 'Empty', value: 1, color: '#333' }] : chartData;
+  const displayData = isEmpty ? [{ name: 'Empty', value: 1, color: 'rgba(255,255,255,0.05)' }] : chartData;
 
   return (
-    <div className="bg-[#282828] rounded-xl p-6 border border-gray-700 shadow-xl h-full flex flex-col justify-between">
-      <h3 className="text-gray-200 font-bold text-lg mb-2">Focus Distribution</h3>
+    <div className="relative bg-[#0a0a0a] rounded-3xl p-8 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] h-full flex flex-col justify-between overflow-hidden group">
+      <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-cyan-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+
+      <h3 className="text-white/50 text-xs uppercase tracking-widest font-bold mb-6 relative z-10">Focus Distribution</h3>
       
-      <div className="grid grid-cols-2 gap-4 items-center h-full">
+      <div className="grid grid-cols-2 gap-6 items-center h-full relative z-10">
         
-        {/* LEFT: 3D-ish Donut Chart */}
-        <div className="w-full h-40 relative">
+        <div className="w-full h-48 relative">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={displayData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={80} // Thoda mota ring
+                  innerRadius={70}
+                  outerRadius={90}
                   startAngle={90}
                   endAngle={-270}
                   dataKey="value"
                   stroke="none"
-                  cornerRadius={6} // 🟢 Rounded Ends (Professional Look)
-                  paddingAngle={5} // Gaps between sections
+                  cornerRadius={8}
+                  paddingAngle={6}
                 >
                   {displayData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} stroke={entry.color} strokeWidth={0} style={{filter: 'drop-shadow(0px 0px 4px rgba(0,0,0,0.5))'}} />
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={entry.color} 
+                      style={{ filter: `drop-shadow(0px 0px 10px ${entry.color}80)` }} 
+                    />
                   ))}
                   
-                  {/* Center Text */}
                   <Label
                     value={loading ? "..." : stats.points_total}
                     position="center"
-                    className="fill-white text-3xl font-extrabold"
+                    className="fill-white text-4xl font-black"
                     dy={-5}
                   />
                   <Label
                     value="Total Points"
                     position="center"
-                    className="fill-gray-500 text-xs font-medium"
-                    dy={20}
+                    className="fill-white/40 text-[10px] font-bold uppercase tracking-widest"
+                    dy={25}
                   />
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
         </div>
 
-        {/* RIGHT: Detailed Stats List */}
-        <div className="space-y-4">
-            <StatRow label="Easy" value={stats.points_easy} color="text-[#00b8a3]" />
-            <StatRow label="Medium" value={stats.points_mod} color="text-[#eab308]" />
-            <StatRow label="Hard" value={stats.points_hard} color="text-[#ef4444]" />
+        <div className="space-y-5">
+            <StatRow label="Easy" value={stats.points_easy} color="text-[#06b6d4]" />
+            <StatRow label="Medium" value={stats.points_mod} color="text-[#a855f7]" />
+            <StatRow label="Hard" value={stats.points_hard} color="text-[#ec4899]" />
             
-            {/* Distraction (Negative) */}
-            <div className="pt-2 border-t border-gray-700 flex justify-between items-center opacity-80">
-                <span className="text-xs text-gray-500 font-medium">Distraction</span>
-                <span className="text-sm font-bold text-rose-400">-{stats.points_dist}</span>
+            <div className="pt-4 border-t border-white/10 flex justify-between items-center mt-2">
+                <span className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Distraction</span>
+                <div className="bg-red-500/10 border border-red-500/20 px-2 py-1 rounded-md">
+                  <span className="text-xs font-black text-red-400">-{stats.points_dist}</span>
+                </div>
             </div>
         </div>
 
@@ -77,14 +78,13 @@ const KarmaCard = ({ stats, loading }) => {
   );
 };
 
-// Helper Component for cleaner code
 const StatRow = ({ label, value, color }) => (
-    <div className="flex justify-between items-end group">
-        <div>
-            <p className={`text-xs font-medium ${color} mb-0.5`}>{label}</p>
-            <p className="text-xl font-bold text-white leading-none">{value}</p>
+    <div className="flex justify-between items-center group bg-white/5 px-4 py-2.5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
+        <p className={`text-xs font-bold uppercase tracking-wider ${color}`}>{label}</p>
+        <div className="flex items-baseline gap-1">
+          <p className="text-xl font-black text-white leading-none">{value}</p>
+          <span className="text-[9px] text-white/30 font-bold tracking-widest">PTS</span>
         </div>
-        <span className="text-[10px] text-gray-600 font-mono mb-1">PTS</span>
     </div>
 );
 

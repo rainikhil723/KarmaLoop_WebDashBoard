@@ -17,14 +17,14 @@ const Rankings = () => {
   const top3 = leaderboard.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-[#1a1a1a] text-white font-sans">
+    <div className="min-h-screen bg-[#050505] text-white font-sans">
       <Navbar onPrint={() => window.print()} />
 
-      <div className="p-4 md:p-8">
+      <div className="pt-28 p-4 md:p-8">
         <div className="max-w-[1200px] mx-auto space-y-6">
           
           {/* Page Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 md:mt-12 lg:mt-18">
             <div className="inline-flex items-center gap-3 bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/30 mb-4">
               <Trophy className="w-5 h-5 text-yellow-500" />
               <span className="text-yellow-400 font-semibold">Global Leaderboard</span>

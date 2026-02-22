@@ -2,79 +2,46 @@ import React from 'react';
 import { ChevronRight } from 'lucide-react';
 
 const BadgesCard = ({ totalPoints }) => {
-  
-  // 3D Badge Data
   const badges = [
-    { 
-      id: 1, name: "Starter", unlockAt: 10, 
-      colorFrom: "from-blue-400", colorTo: "to-blue-600", 
-      shadow: "shadow-blue-500/50", letter: "S" 
-    },
-    { 
-      id: 2, name: "Focus 50", unlockAt: 50, 
-      colorFrom: "from-emerald-400", colorTo: "to-emerald-600", 
-      shadow: "shadow-emerald-500/50", letter: "50" 
-    },
-    { 
-      id: 3, name: "Century", unlockAt: 100, 
-      colorFrom: "from-amber-400", colorTo: "to-amber-600", 
-      shadow: "shadow-amber-500/50", letter: "100" 
-    },
+    { id: 1, name: "Starter", unlockAt: 10, colorFrom: "from-blue-500", colorTo: "to-cyan-400", shadow: "shadow-[0_0_20px_rgba(34,211,238,0.4)]", letter: "S" },
+    { id: 2, name: "Focus 50", unlockAt: 50, colorFrom: "from-emerald-500", colorTo: "to-teal-400", shadow: "shadow-[0_0_20px_rgba(45,212,191,0.4)]", letter: "50" },
+    { id: 3, name: "Century", unlockAt: 100, colorFrom: "from-orange-500", colorTo: "to-amber-400", shadow: "shadow-[0_0_20px_rgba(251,191,36,0.4)]", letter: "100" },
   ];
 
   const unlockedCount = badges.filter(b => totalPoints >= b.unlockAt).length;
 
   return (
-    <div className="bg-[#282828] p-5 rounded-xl border border-gray-700 shadow-xl h-full flex flex-col">
-       <div className="flex justify-between items-center mb-6">
+    <div className="relative overflow-hidden bg-[#0a0a0a] p-8 rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] h-full flex flex-col group">
+       <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-500/10 to-transparent blur-3xl -z-10 rounded-full pointer-events-none transition-opacity group-hover:opacity-100 opacity-50"></div>
+       
+       <div className="flex justify-between items-start mb-8 z-10">
          <div>
-            <span className="text-gray-400 text-sm font-medium">Badges</span>
-            <div className="text-2xl font-bold text-white mt-1">{unlockedCount}</div>
+            <h2 className="text-white/50 text-xs uppercase tracking-widest font-bold mb-1">Milestones</h2>
+            <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
+                  {unlockedCount}
+                </span>
+                <span className="text-white/40 text-sm font-medium">/ {badges.length} Unlocked</span>
+            </div>
          </div>
-         <ChevronRight size={20} className="text-gray-500 cursor-pointer hover:text-white transition"/>
+         <button className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 hover:bg-white/10 hover:scale-110 transition-all duration-300">
+            <ChevronRight size={18} className="text-white/70" />
+         </button>
        </div>
 
-       {/* 3D Badges Container */}
-       <div className="flex gap-4 mt-2 justify-start overflow-x-auto pb-4 custom-scrollbar">
+       <div className="flex gap-5 mt-auto justify-start overflow-x-auto pb-2 scrollbar-hide z-10">
           {badges.map((badge) => {
              const isUnlocked = totalPoints >= badge.unlockAt;
              return (
-               <div key={badge.id} className="relative group perspective-1000">
-                  
-                  {/* THE 3D BADGE */}
-                  <div className={`
-                    w-20 h-24 rounded-lg flex items-center justify-center 
-                    transition-all duration-500 transform-style-3d group-hover:rotate-y-12
-                    ${isUnlocked 
-                        ? `bg-gradient-to-br ${badge.colorFrom} ${badge.colorTo} ${badge.shadow} shadow-lg` 
-                        : 'bg-[#3a3a3a] border border-gray-600 opacity-40 grayscale'}
-                    relative overflow-hidden
-                  `}>
-                     
-                     {/* Glossy Reflection Effect */}
-                     {isUnlocked && (
-                         <div className="absolute top-0 left-0 w-full h-1/2 bg-white/20 skew-y-12 transform -translate-y-4"></div>
-                     )}
-
-                     {/* Inner Circle / Content */}
-                     <div className={`
-                        w-14 h-14 rounded-full bg-[#1a1a1a]/20 backdrop-blur-sm 
-                        flex items-center justify-center border border-white/30
-                        text-white font-bold text-lg shadow-inner
-                     `}>
+               <div key={badge.id} className="relative flex-shrink-0 flex flex-col items-center gap-3">
+                  <div className={`w-20 h-20 rounded-2xl flex items-center justify-center transition-all duration-500 ${isUnlocked ? `bg-gradient-to-br ${badge.colorFrom} ${badge.colorTo} ${badge.shadow} shadow-2xl scale-100` : 'bg-white/5 border border-white/10 scale-95 opacity-50 grayscale'}`}>
+                     <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black text-xl bg-black/20 backdrop-blur-md border border-white/20 shadow-inner">
                         {badge.letter}
                      </div>
-
-                     {/* Bottom Thickness (Fake 3D Depth) */}
-                     {isUnlocked && (
-                        <div className="absolute bottom-0 w-full h-1 bg-black/30"></div>
-                     )}
                   </div>
-
-                  {/* Tooltip Name */}
-                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-400 opacity-0 group-hover:opacity-100 transition whitespace-nowrap bg-black/80 px-2 py-1 rounded">
+                  <span className={`text-xs font-bold tracking-wide ${isUnlocked ? 'text-white/90' : 'text-white/30'}`}>
                      {badge.name}
-                  </div>
+                  </span>
                </div>
              );
           })}

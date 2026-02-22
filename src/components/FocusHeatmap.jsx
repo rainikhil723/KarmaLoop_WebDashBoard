@@ -3,18 +3,16 @@ import { Tooltip } from 'react-tooltip';
 import { LayoutDashboard, Loader2 } from 'lucide-react';
 import useHistory from '../hooks/useHistory';
 
-// Color levels for the heatmap
 const COLORS = [
-  '#3b3b3b', // Level 0: Empty/No activity
-  '#0e4429', // Level 1: Light green
-  '#006d32', // Level 2: Medium green
-  '#26a641', // Level 3: Bright green
-  '#39d353', // Level 4: Neon green
+  'rgba(255,255,255,0.03)',
+  '#581c87',
+  '#7e22ce',
+  '#a855f7',
+  '#ec4899',
 ];
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-// Helper to format date as YYYY-MM-DD in local timezone (not UTC)
 const formatLocalDate = (date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -48,17 +46,14 @@ const FocusHeatmap = () => {
     }
   }, [yearOptions, selectedYear, currentYear]);
 
-  // Generate calendar data - "Current" shows last 12 months, other years show Jan-Dec
   const calendarData = useMemo(() => {
     const today = new Date();
-    // Normalize today to midnight for accurate date comparison
     today.setHours(0, 0, 0, 0);
     const isCurrentView = selectedYear === currentYear;
 
     const months = [];
     
     if (isCurrentView) {
-      // Show last 12 months from today
       for (let i = 11; i >= 0; i--) {
         const targetDate = new Date(today.getFullYear(), today.getMonth() - i, 1);
         const monthStart = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1);
@@ -100,7 +95,6 @@ const FocusHeatmap = () => {
         });
       }
     } else {
-      // Show full calendar year Jan-Dec
       for (let month = 0; month < 12; month++) {
         const monthStart = new Date(selectedYear, month, 1);
         const monthEnd = new Date(selectedYear, month + 1, 0);
@@ -169,78 +163,77 @@ const FocusHeatmap = () => {
 
   if (loading) {
     return (
-      <div className="bg-[#282828] p-3 sm:p-6 rounded-xl border border-gray-700 h-40 flex items-center justify-center text-gray-500">
-        <Loader2 className="animate-spin mr-2" /> Loading Heatmap...
+      <div className="bg-[#0a0a0a] p-6 rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] h-40 flex items-center justify-center text-white/40 backdrop-blur-xl">
+        <Loader2 className="animate-spin mr-3 text-pink-500" size={24} /> 
+        <span className="font-semibold tracking-wide">Loading Heatmap...</span>
       </div>
     );
   }
 
-  // Calculate total weeks for CSS grid
   const totalWeeks = calendarData.reduce((sum, month) => sum + month.weeks.length, 0);
 
   return (
-    <div className="bg-[#282828] p-3 sm:p-4 md:p-6 rounded-xl border border-gray-900 shadow-xl w-full overflow-hidden">
-      {/* HEADER */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-end mb-3 sm:mb-6">
+    <div className="relative bg-[#0a0a0a] p-6 md:p-8 rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] w-full overflow-hidden group">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none transition-opacity duration-700 opacity-50 group-hover:opacity-100"></div>
+
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-8 relative z-10">
         <div>
-          <h3 className="text-sm sm:text-lg font-bold text-gray-200 flex items-center gap-2">
-            <LayoutDashboard size={16} className="text-green-500 sm:w-5 sm:h-5" />
+          <h3 className="text-white/50 text-xs uppercase tracking-widest font-bold mb-1 flex items-center gap-2">
+            <LayoutDashboard size={14} className="text-purple-400" />
             Focus History
           </h3>
-          <div className="text-[10px] sm:text-xs text-gray-400 mt-1">
-            <span className="text-white font-bold">{totalActiveDays}</span> Active Days{' '}
-            {selectedYear === currentYear ? 'in the past year' : `in ${selectedYear}`}
+          <div className="text-2xl font-black text-white mt-1">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">{totalActiveDays}</span> 
+            <span className="text-lg text-white/60 ml-2 font-bold tracking-tight">Active Days</span>
+            <span className="text-sm font-medium text-white/30 ml-2">
+              {selectedYear === currentYear ? 'in the past year' : `in ${selectedYear}`}
+            </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="mt-4 sm:mt-0">
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(Number(e.target.value))}
-            className="bg-[#1f1f1f] border border-gray-700 text-gray-200 text-xs sm:text-sm rounded-md px-2 sm:px-3 py-1 sm:py-2 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
+            className="bg-white/5 border border-white/10 text-white/80 text-sm font-semibold rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer backdrop-blur-md appearance-none hover:bg-white/10 transition-colors"
           >
             {yearOptions.map((year) => (
-              <option key={year} value={year}>
-                {year === currentYear ? 'Current' : year}
+              <option key={year} value={year} className="bg-[#111] text-white">
+                {year === currentYear ? 'Current Year' : year}
               </option>
             ))}
           </select>
         </div>
       </div>
 
-      {/* CALENDAR GRID - USING FLEX FOR MONTHS WITH GAPS */}
-      <div className="w-full">
-        {/* Calendar container - flex with month gaps */}
+      <div className="w-full relative z-10">
         <div className="flex w-full gap-[6px]">
           {calendarData.map((month, monthIndex) => (
             <div 
               key={monthIndex}
               className="flex"
-              style={{ 
-                flex: month.weeks.length,
-                gap: '2px',
-              }}
+              style={{ flex: month.weeks.length, gap: '4px' }}
             >
               {month.weeks.map((week, weekIndex) => (
                 <div 
                   key={weekIndex} 
                   className="flex-1 flex flex-col"
-                  style={{ gap: '2px' }}
+                  style={{ gap: '4px' }}
                 >
                   {week.map((day, dayIndex) => (
                     <div
                       key={dayIndex}
                       data-tooltip-id="heatmap-tooltip"
                       data-tooltip-content={day && !day.isFuture ? `${day.count} points on ${day.date}` : ''}
-                      className="aspect-square w-full rounded-[1px] sm:rounded-[2px]"
+                      className="aspect-square w-full rounded-sm sm:rounded-[3px] transition-all duration-300 hover:scale-125 hover:z-10 hover:shadow-[0_0_10px_rgba(236,72,153,0.5)]"
                       style={{
                         backgroundColor: day 
-                          ? (day.isFuture ? '#3b3b3b' : COLORS[day.level])
+                          ? (day.isFuture ? 'rgba(255,255,255,0.02)' : COLORS[day.level])
                           : 'transparent',
                         cursor: day && !day.isFuture ? 'pointer' : 'default',
                         opacity: day?.isFuture ? 0.3 : 1,
-                        minWidth: '3px',
-                        maxWidth: '12px',
+                        minWidth: '4px',
+                        maxWidth: '14px',
                       }}
                     />
                   ))}
@@ -250,15 +243,12 @@ const FocusHeatmap = () => {
           ))}
         </div>
         
-        {/* Month labels at bottom */}
-        <div className="flex w-full mt-1 gap-[6px]">
+        <div className="flex w-full mt-3 gap-[6px]">
           {calendarData.map((month, monthIndex) => (
             <div
               key={month.name + monthIndex}
-              className="text-[6px] sm:text-[8px] md:text-[10px] text-gray-500 text-center truncate"
-              style={{ 
-                flex: month.weeks.length,
-              }}
+              className="text-[10px] font-bold text-white/40 text-center truncate uppercase tracking-wider"
+              style={{ flex: month.weeks.length }}
             >
               {month.name}
             </div>
@@ -266,34 +256,35 @@ const FocusHeatmap = () => {
         </div>
       </div>
 
-      {/* FOOTER */}
-      <div className="flex flex-wrap justify-between items-center mt-2 sm:mt-4 text-[8px] sm:text-[10px] text-gray-500 gap-2">
-        <div>
-          <span className="text-white font-semibold">{totalPoints}</span> points {selectedYear === currentYear ? 'in the past year' : `in ${selectedYear}`}
+      <div className="flex flex-wrap justify-between items-center mt-8 text-xs font-semibold text-white/50 relative z-10">
+        <div className="bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+          <span className="text-white font-bold">{totalPoints}</span> Total Points
         </div>
         
-        {/* Legend */}
-        <div className="flex items-center gap-[2px] sm:gap-1">
-          <span className="hidden sm:inline">Less</span>
+        <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+          <span className="text-[10px] uppercase tracking-wider mr-1">Less</span>
           {COLORS.map((color, index) => (
             <div
               key={index}
-              className="w-[6px] h-[6px] sm:w-[8px] sm:h-[8px] md:w-[10px] md:h-[10px] rounded-[1px] sm:rounded-[2px]"
+              className="w-3 h-3 rounded-[3px]"
               style={{ backgroundColor: color }}
             />
           ))}
-          <span className="hidden sm:inline">More</span>
+          <span className="text-[10px] uppercase tracking-wider ml-1">More</span>
         </div>
       </div>
 
       <Tooltip
         id="heatmap-tooltip"
-        className="z-50 font-sans text-xs"
+        className="z-50 font-sans font-bold text-xs"
         style={{
-          backgroundColor: '#111',
+          backgroundColor: 'rgba(0,0,0,0.8)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255,255,255,0.1)',
           color: '#fff',
-          padding: '8px 12px',
-          borderRadius: '6px',
+          padding: '8px 14px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
         }}
       />
     </div>

@@ -26,12 +26,10 @@ const Dashboard = () => {
   const [seeding, setSeeding] = useState(false);
   const [clearing, setClearing] = useState(false);
 
-  // Get current user's rank and hours from leaderboard
   const currentUserData = leaderboard.find(u => u.uid === user?.uid);
   const userRank = currentUserData?.rank || null;
   const hoursStudied = currentUserData?.hours_studied || 0;
 
-  // 🔥 Seed Database Function
   const handleSeedDatabase = async () => {
     if (window.confirm('Generate 1 year of fake activity data? This will populate your heatmap!')) {
       setSeeding(true);
@@ -40,7 +38,6 @@ const Dashboard = () => {
     }
   };
 
-  // 🔥 Clear All History Function
   const handleClearHistory = async () => {
     if (window.confirm('⚠️ Delete ALL history data? This cannot be undone!')) {
       setClearing(true);
@@ -65,13 +62,16 @@ const Dashboard = () => {
   }, [user]);
 
   return (
-    <div className="min-h-screen bg-[#1a1a1a] text-white font-sans">
+    <div className="min-h-screen bg-[#050505] text-white font-sans relative overflow-hidden">
+      
+      <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-pink-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+
       <Navbar onPrint={() => window.print()} />
 
-      <div className="p-4 md:p-8 flex justify-center">
-        <div className="max-w-[1200px] w-full grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="pt-32 pb-16 px-4 md:px-8 flex justify-center relative z-10">
+        <div className="max-w-[1400px] w-full grid grid-cols-1 xl:grid-cols-4 gap-8">
           
-          {/* Left: Sidebar */}
           <div className="col-span-1">
               <Sidebar 
                 userData={{...userData, karma: stats.points_total, rank: stats.rank}} 
@@ -80,28 +80,18 @@ const Dashboard = () => {
               />
           </div>
 
-          {/* Right: Main Content */}
-          <div className="col-span-1 md:col-span-3 space-y-6">
+          <div className="col-span-1 xl:col-span-3 space-y-8">
               
-              {/* 🔥 TOP ROW: LeetCode Style Stats */}
-              <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                
-                {/* 1. CIRCULAR KARMA CARD (Takes 3 columns) */}
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 <div className="lg:col-span-3">
                    <KarmaCard stats={stats} loading={stats.loading} />
                 </div>
-
-                {/* 2. BADGES CARD (Takes 2 columns) */}
                 <div className="lg:col-span-2">
                    <BadgesCard totalPoints={stats.points_total} />
                 </div>
-              
               </div>
 
-              {/* 3. Heatmap */}
               <FocusHeatmap />
-              
-              {/* 4. History Chart */}
               <HistoryChart />
           </div>
 
@@ -114,26 +104,23 @@ const Dashboard = () => {
         onClose={() => setModalOpen(false)} 
       />
 
-      {/* 🔥 FLOATING BUTTONS */}
-      <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
-        {/* Clear History Button */}
+      <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-50">
         <button
           onClick={handleClearHistory}
           disabled={clearing}
-          className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 font-bold text-sm transition-all transform hover:scale-105"
+          className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 backdrop-blur-md text-red-400 px-6 py-3.5 rounded-2xl shadow-[0_8px_32px_rgba(239,68,68,0.2)] flex items-center gap-3 font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(239,68,68,0.4)] disabled:opacity-50 disabled:scale-100"
         >
-          <Trash2 size={20} />
-          {clearing ? 'Clearing...' : '🗑️ Clear All History'}
+          <Trash2 size={18} />
+          {clearing ? 'Purging...' : 'Purge Logs'}
         </button>
 
-        {/* Seed Database Button */}
         <button
           onClick={handleSeedDatabase}
           disabled={seeding}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 font-bold text-sm transition-all transform hover:scale-105"
+          className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white px-6 py-3.5 rounded-2xl shadow-[0_8px_32px_rgba(236,72,153,0.3)] flex items-center gap-3 font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(236,72,153,0.5)] disabled:opacity-50 disabled:scale-100"
         >
-          <Database size={20} />
-          {seeding ? 'Seeding...' : '🚀 Generate Activity Data'}
+          <Database size={18} />
+          {seeding ? 'Synthesizing...' : 'Synthesize Data'}
         </button>
       </div>
     </div>
