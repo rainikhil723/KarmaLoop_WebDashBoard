@@ -69,7 +69,7 @@ const Dashboard = () => {
 
       <Navbar onPrint={() => window.print()} />
 
-      <div className="pt-32 pb-16 px-4 md:px-8 flex justify-center relative z-10">
+      <div className="pt-28 sm:pt-32 pb-16 px-3 sm:px-4 md:px-8 flex justify-center relative z-10">
         <div className="max-w-[1400px] w-full grid grid-cols-1 xl:grid-cols-4 gap-8">
           
           <div className="col-span-1">
@@ -87,7 +87,7 @@ const Dashboard = () => {
                    <KarmaCard stats={stats} loading={stats.loading} />
                 </div>
                 <div className="lg:col-span-2">
-                   <BadgesCard totalPoints={stats.points_total} />
+                   <BadgesCard totalPoints={stats.points_total} activeDays={stats.activeDays} />
                 </div>
               </div>
 

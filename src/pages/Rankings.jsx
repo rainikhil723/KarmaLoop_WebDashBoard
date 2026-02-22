@@ -20,14 +20,14 @@ const Rankings = () => {
     <div className="min-h-screen bg-[#050505] text-white font-sans">
       <Navbar onPrint={() => window.print()} />
 
-      <div className="pt-28 p-4 md:p-8">
+      <div className="pt-28 sm:pt-28 p-3 sm:p-4 md:p-8">
         <div className="max-w-[1200px] mx-auto space-y-6">
           
           {/* Page Header */}
-          <div className="text-center mb-8 md:mt-12 lg:mt-18">
-            <div className="inline-flex items-center gap-3 bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/30 mb-4">
-              <Trophy className="w-5 h-5 text-yellow-500" />
-              <span className="text-yellow-400 font-semibold">Global Leaderboard</span>
+          <div className="text-center mb-8 md:mt-18 lg:mt-18">
+            <div className="inline-flex items-center gap-3 bg-white/5 px-4 py-2 rounded-full border border-white/15 mb-4">
+              <Trophy className="w-5 h-5 text-[#a0aec0]" />
+              <span className="text-[#a0aec0] font-semibold">Global Leaderboard</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
               🏆 Rankings
@@ -118,7 +118,7 @@ const Rankings = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-green-400">#{userRank}</p>
+                  <p className="text-2xl font-bold text-[#a0aec0]">#{userRank}</p>
                   <p className="text-xs text-gray-500">{currentUserData.points_total} points</p>
                 </div>
               </div>

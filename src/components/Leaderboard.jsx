@@ -40,7 +40,7 @@ const Leaderboard = () => {
     return (
       <div className="bg-[#0a0a0a] p-8 rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
         <div className="flex items-center gap-3 mb-8">
-          <Trophy className="w-6 h-6 text-pink-500" />
+          <Trophy className="w-6 h-6 text-[#a0aec0]" />
           <h3 className="text-xl font-black text-white tracking-tight">Global Rankings</h3>
         </div>
         <div className="flex items-center justify-center h-48 text-white/40">
@@ -57,8 +57,8 @@ const Leaderboard = () => {
 
       <div className="p-6 sm:p-8 border-b border-white/10 relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(236,72,153,0.3)]">
-            <Trophy className="w-6 h-6 text-white" />
+          <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center">
+            <Trophy className="w-6 h-6 text-[#a0aec0]" />
           </div>
           <div>
             <h3 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 tracking-tight">Global Rankings</h3>
@@ -69,7 +69,7 @@ const Leaderboard = () => {
         {currentUserRank && (
           <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-xl border border-white/10 backdrop-blur-md">
             <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Your Rank</span>
-            <span className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">#{currentUserRank.rank}</span>
+            <span className="text-lg font-black text-[#a0aec0]">#{currentUserRank.rank}</span>
           </div>
         )}
       </div>
@@ -83,7 +83,7 @@ const Leaderboard = () => {
         <div className="col-span-1 text-center">Sector</div>
       </div>
 
-      <div className="flex flex-col gap-2 p-4 sm:p-6 relative z-10">
+      <div className="flex flex-col gap-2 p-3 sm:p-4 md:p-6 relative z-10">
         {displayedUsers.map((rankedUser) => {
           const isCurrentUser = rankedUser.uid === user?.uid;
           const tier = getTierBadge(rankedUser.points_total);
@@ -91,7 +91,7 @@ const Leaderboard = () => {
           return (
             <div
               key={rankedUser.uid}
-              className={`grid grid-cols-12 gap-4 px-4 sm:px-6 py-4 items-center transition-all duration-300 ${
+              className={`grid grid-cols-12 gap-2 sm:gap-4 px-3 sm:px-6 py-3 sm:py-4 items-center transition-all duration-300 ${
                 isCurrentUser 
                   ? 'bg-gradient-to-r from-cyan-500/20 to-transparent border-l-4 border-l-cyan-400 border-y border-y-cyan-500/20 border-r border-r-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.15)]' 
                   : getRankStyle(rankedUser.rank)

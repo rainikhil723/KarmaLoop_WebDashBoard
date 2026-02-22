@@ -12,22 +12,22 @@ const KarmaCard = ({ stats, loading }) => {
   const displayData = isEmpty ? [{ name: 'Empty', value: 1, color: 'rgba(255,255,255,0.05)' }] : chartData;
 
   return (
-    <div className="relative bg-[#0a0a0a] rounded-3xl p-8 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] h-full flex flex-col justify-between overflow-hidden group">
+    <div className="relative bg-[#0a0a0a] rounded-3xl p-5 sm:p-8 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] h-full flex flex-col justify-between overflow-hidden group">
       <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-cyan-500/10 blur-[80px] rounded-full pointer-events-none"></div>
 
-      <h3 className="text-white/50 text-xs uppercase tracking-widest font-bold mb-6 relative z-10">Focus Distribution</h3>
+      <h3 className="text-white/50 text-xs uppercase tracking-widest font-bold mb-4 sm:mb-6 relative z-10">Focus Distribution</h3>
       
-      <div className="grid grid-cols-2 gap-6 items-center h-full relative z-10">
+      <div className="flex flex-col sm:grid sm:grid-cols-2 gap-6 items-center h-full relative z-10">
         
-        <div className="w-full h-48 relative">
+        <div className="w-full h-44 sm:h-48 relative">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={displayData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={70}
-                  outerRadius={90}
+                  innerRadius="55%"
+                  outerRadius="75%"
                   startAngle={90}
                   endAngle={-270}
                   dataKey="value"

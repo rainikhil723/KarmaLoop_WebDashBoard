@@ -173,7 +173,7 @@ const FocusHeatmap = () => {
   const totalWeeks = calendarData.reduce((sum, month) => sum + month.weeks.length, 0);
 
   return (
-    <div className="relative bg-[#0a0a0a] p-6 md:p-8 rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] w-full overflow-hidden group">
+    <div className="relative bg-[#0a0a0a] p-4 sm:p-6 md:p-8 rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] w-full overflow-hidden group">
       <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none transition-opacity duration-700 opacity-50 group-hover:opacity-100"></div>
 
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-8 relative z-10">
@@ -206,8 +206,8 @@ const FocusHeatmap = () => {
         </div>
       </div>
 
-      <div className="w-full relative z-10">
-        <div className="flex w-full gap-[6px]">
+      <div className="w-full relative z-10 overflow-x-auto scrollbar-hide">
+        <div className="flex w-full gap-[4px] sm:gap-[6px]" style={{ minWidth: '600px' }}>
           {calendarData.map((month, monthIndex) => (
             <div 
               key={monthIndex}
@@ -232,8 +232,6 @@ const FocusHeatmap = () => {
                           : 'transparent',
                         cursor: day && !day.isFuture ? 'pointer' : 'default',
                         opacity: day?.isFuture ? 0.3 : 1,
-                        minWidth: '4px',
-                        maxWidth: '14px',
                       }}
                     />
                   ))}
@@ -243,7 +241,7 @@ const FocusHeatmap = () => {
           ))}
         </div>
         
-        <div className="flex w-full mt-3 gap-[6px]">
+        <div className="flex w-full mt-3 gap-[4px] sm:gap-[6px]" style={{ minWidth: '600px' }}>
           {calendarData.map((month, monthIndex) => (
             <div
               key={month.name + monthIndex}
@@ -256,7 +254,7 @@ const FocusHeatmap = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap justify-between items-center mt-8 text-xs font-semibold text-white/50 relative z-10">
+      <div className="flex flex-wrap justify-between items-center gap-3 mt-6 sm:mt-8 text-xs font-semibold text-white/50 relative z-10">
         <div className="bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
           <span className="text-white font-bold">{totalPoints}</span> Total Points
         </div>

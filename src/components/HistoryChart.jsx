@@ -29,7 +29,7 @@ const HistoryChart = () => {
   const chartData = getLast7Days();
 
   return (
-    <div className="relative bg-[#0a0a0a] p-8 rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] mt-6 overflow-hidden group">
+    <div className="relative bg-[#0a0a0a] p-5 sm:p-8 rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] mt-6 overflow-hidden group">
       <div className="absolute -top-32 -left-32 w-96 h-96 bg-pink-500/10 blur-[100px] rounded-full pointer-events-none"></div>
       
       <div className="flex justify-between items-end mb-8 relative z-10">
@@ -44,7 +44,7 @@ const HistoryChart = () => {
           </div>
       </div>
       
-      <div className="h-80 w-full relative z-10">
+      <div className="h-56 sm:h-80 w-full relative z-10">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
             <defs>

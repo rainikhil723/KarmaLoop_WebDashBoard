@@ -16,7 +16,7 @@ const Sidebar = ({ userData, userRank, hoursStudied }) => {
   const theme = getRankTheme(data.rank);
 
   return (
-    <div className="relative bg-[#0a0a0a] rounded-3xl p-8 h-fit border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] col-span-1 overflow-hidden group">
+    <div className="relative bg-[#0a0a0a] rounded-3xl p-5 sm:p-8 h-fit border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] col-span-1 overflow-hidden group">
       
       <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-pink-500/10 via-purple-500/5 to-transparent blur-[60px] pointer-events-none transition-opacity duration-700 opacity-50 group-hover:opacity-100"></div>
 
