@@ -1,49 +1,105 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Hexagon } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const Login = () => {
   const { googleSignIn } = useAuth();
 
   return (
-    <div className="relative h-screen flex flex-col justify-center items-center bg-[#050505] text-white px-4 overflow-hidden">
-      
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-pink-500/20 via-purple-500/20 to-cyan-500/20 blur-[120px] rounded-full pointer-events-none animate-pulse duration-1000"></div>
+    <div className="relative h-screen flex flex-col justify-center items-center bg-[#060608] text-white px-4 overflow-hidden select-none">
 
-      <div className="relative z-10 bg-[#0a0a0a]/80 backdrop-blur-2xl p-12 rounded-[2.5rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] text-center w-full max-w-md group">
-        
-        <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-[2.5rem] pointer-events-none"></div>
+      {/* ── layered ambient blurs ── */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-[-20%] left-[-10%] w-[700px] h-[700px] rounded-full bg-purple-700/15 blur-[160px]" />
+        <div className="absolute bottom-[-15%] right-[-8%] w-[600px] h-[600px] rounded-full bg-cyan-600/10 blur-[140px]" />
+        <div className="absolute top-[30%] right-[15%] w-[300px] h-[300px] rounded-full bg-fuchsia-500/8 blur-[100px] animate-pulse" />
+      </div>
 
-        <div className="mb-10 flex justify-center relative">
-          <div className="absolute inset-0 bg-pink-500/20 blur-2xl rounded-full"></div>
-          <div className="w-24 h-24 bg-gradient-to-br from-pink-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-[0_0_30px_rgba(236,72,153,0.4)] group-hover:scale-105 group-hover:rotate-6 transition-all duration-500 relative z-10">
-            <Hexagon size={48} className="text-white fill-white/20" strokeWidth={1.5} />
+      {/* ── subtle grid overlay ── */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
+        }}
+      />
+
+      {/* ── card ── */}
+      <div className="relative z-10 w-full max-w-[420px] group">
+
+        {/* outer glow ring on hover */}
+        <div className="absolute -inset-[1px] rounded-[2rem] bg-gradient-to-br from-white/10 via-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+        <div className="relative bg-[#0c0c10]/80 backdrop-blur-3xl rounded-[2rem] border border-white/[0.06] shadow-2xl overflow-hidden">
+
+          {/* inner top highlight */}
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+          <div className="px-10 pt-14 pb-12">
+
+            {/* ── logo ── */}
+            <div className="flex justify-center mb-8 relative">
+              <div className="absolute w-28 h-28 rounded-full bg-purple-500/15 blur-2xl" />
+              <img
+                src={logo}
+                alt="KarmaLoop"
+                className="relative z-10 w-20 h-20 object-contain drop-shadow-[0_0_24px_rgba(168,85,247,0.35)] group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+
+            {/* ── heading ── */}
+            <h1 className="text-center text-[2rem] font-extrabold leading-none tracking-tight mb-1">
+              <span className="bg-gradient-to-b from-white via-white/90 to-white/50 bg-clip-text text-transparent">
+                KarmaLoop
+              </span>
+            </h1>
+            <p className="text-center text-[0.8rem] uppercase tracking-[0.25em] text-white/25 font-semibold mb-10">
+              Focus Mastery Interface
+            </p>
+
+            {/* ── divider ── */}
+            <div className="flex items-center gap-4 mb-10">
+              <span className="flex-1 h-px bg-gradient-to-r from-transparent to-white/10" />
+              <span className="text-[0.65rem] uppercase tracking-[0.2em] text-white/20 font-bold">sign&nbsp;in</span>
+              <span className="flex-1 h-px bg-gradient-to-l from-transparent to-white/10" />
+            </div>
+
+            {/* ── CTA button ── */}
+            <button
+              onClick={googleSignIn}
+              className="
+                relative w-full flex items-center justify-center gap-3
+                bg-white text-[#111] font-bold text-[0.95rem]
+                py-[14px] px-6 rounded-xl
+                transition-all duration-300 ease-out
+                hover:-translate-y-0.5
+                hover:shadow-[0_14px_36px_-6px_rgba(255,255,255,0.18)]
+                active:scale-[0.98]
+                cursor-pointer
+              "
+            >
+              <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                alt="Google"
+                className="w-5 h-5"
+              />
+              Continue with Google
+            </button>
+
+            {/* ── subtle legal line ── */}
+            <p className="mt-6 text-center text-[0.65rem] text-white/15 leading-relaxed">
+              By continuing you agree to our Terms&nbsp;of&nbsp;Service
+            </p>
           </div>
         </div>
-
-        <h1 className="text-4xl font-black mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 tracking-tight">
-          KarmaLoop
-        </h1>
-        <p className="text-white/40 mb-10 font-medium tracking-wide">
-          Authenticate to access your dashboard.
-        </p>
-
-        <button 
-          onClick={googleSignIn}
-          className="w-full flex items-center justify-center gap-4 bg-white hover:bg-gray-100 text-black font-black py-4 px-8 rounded-2xl transition-all duration-300 transform hover:-translate-y-1 shadow-[0_10px_20px_rgba(255,255,255,0.1)] hover:shadow-[0_15px_30px_rgba(255,255,255,0.2)]"
-        >
-          <img 
-            src="https://www.svgrepo.com/show/475656/google-color.svg" 
-            alt="Google" 
-            className="w-6 h-6"
-          />
-          Initialize Session
-        </button>
       </div>
-      
-      <p className="absolute bottom-8 text-white/20 text-xs font-bold uppercase tracking-widest">
-        Focus Mastery Interface • v2.0
-      </p>
+
+      {/* ── bottom bar ── */}
+      <div className="absolute bottom-6 flex items-center gap-2 text-white/15 text-[0.65rem] font-semibold uppercase tracking-[0.2em]">
+        <span className="inline-block w-1 h-1 rounded-full bg-emerald-400/60" />
+        All systems operational
+      </div>
     </div>
   );
 };
